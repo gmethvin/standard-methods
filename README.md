@@ -1,8 +1,22 @@
 # Standard Methods
 
+[![Travis CI](https://travis-ci.org/gmethvin/standard-methods.svg?branch=master)](https://travis-ci.org/gmethvin/standard-methods) [![Maven](https://img.shields.io/maven-central/v/io.methvin.standardmethods/macros_2.12.svg)](https://mvnrepository.com/artifact/io.methvin.standardmethods/macros)
+
 A set of Scala macros for generating the methods defined on `java.lang.Object`: `equals`, `hashCode` and `toString`.
 
-For example, say you have a class with:
+## Getting the library
+
+To add the dependency in sbt:
+
+```scala
+libraryDependencies += "io.methvin.standardmethods" %% "macros" % standardMethodsVersion % "provided"
+```
+
+where `standardMethodsVersion` is the latest version: ![latest maven version](https://img.shields.io/maven-central/v/io.methvin.standardmethods/macros_2.12.svg)
+
+## Example
+
+For example, suppose you have a class with:
 
 ```scala
 import io.methvin.standardmethods.macros._
@@ -41,7 +55,7 @@ class Person(val name: String, val age: Int, description: String) {
 
 You can also use `equalsAllVals` and `hashCodeAllVals` to use *all* vals owned by the class rather than just those in the constructor. Note that this does not include vals defined in a superclass. Generally superclass vals can be handled by using `equalsAllVals(this, that) && super.equals(that)` and `hashCodeAllVals(this) ^ super.hashCode`. Contributions are welcome if someone wants to provide a more elegant solution.
 
-Note: the macros are primarily meant to be used in a method of the class on which they are used, but `equals` and `hashCode` will work elsewhere as long as all the necessary methods are public. In other words, the macros for `equals` and `hashCode` themselves do not depend on the scope, since the instances used are passed directly, but the code they generate might not work due to privacy restrictions. The `toStringConstructorParams` macro simply referenced the unprefixed constructor params, so it must be used within the class where it is needed.
+Note: the macros are primarily meant to be used in a method of the class on which they are used, but `equals` and `hashCode` will work elsewhere as long as all the necessary methods are public. In other words, the macros for `equals` and `hashCode` themselves do not depend on the scope, since the instances used are passed directly, but the code they generate might not work due to privacy restrictions. The `toStringConstructorParams` macro simply references the unprefixed constructor params, so it must be used within the class where it is needed.
 
 ## License
 
@@ -49,4 +63,4 @@ This code is licensed under the Apache License, Version 2.0.
 
 ## Issues and Contributions
 
-Please report an issue on this GitHub repository if you find anything that doesn't work or you have any feature requests. This is a side project for me so your issue is much more likely to be fixed if you submit a pull request.
+Please report an issue on this GitHub repository if you find anything that doesn't work as expected, or you have any feature requests. Your issue is much more likely to be fixed if you also submit a pull request to fix it yourself.
