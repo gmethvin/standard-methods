@@ -20,10 +20,14 @@ package object macros {
 
   import scala.language.experimental.macros
 
-  def equalsAllVals[T](self: T, other: Any): Boolean = macro MacrosImpl.equalsAllVals[T]
+  def equalsAllVals[T](self: T, other: Any): Boolean =
+    macro MacrosImpl.equalsAllVals[T]
   def hashCodeAllVals[T](self: T): Int = macro MacrosImpl.hashCodeAllVals[T]
-  def equalsConstructorVals[T](self: T, other: Any): Boolean = macro MacrosImpl.equalsConstructorVals[T]
-  def hashCodeConstructorVals[T](self: T): Int = macro MacrosImpl.hashCodeConstructorVals[T]
-  def toStringConstructorParams[T](self: T): String = macro MacrosImpl.toStringConstructorParams[T]
+  def equalsConstructorVals[T](self: T, other: Any): Boolean =
+    macro MacrosImpl.equalsConstructorVals[T]
+  def hashCodeConstructorVals[T](self: T): Int =
+    macro MacrosImpl.hashCodeConstructorVals[T]
+  def toStringConstructorParams[T](self: T): String =
+    macro MacrosImpl.toStringConstructorParams[T]
 
 }

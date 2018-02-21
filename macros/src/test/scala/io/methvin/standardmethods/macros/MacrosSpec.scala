@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Greg Methvin
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.methvin.standardmethods.macros
 
 import org.scalatest.{Assertion, WordSpec}
@@ -19,8 +35,10 @@ class MacrosSpec extends WordSpec {
         override def equals(obj: Any) = equalsAllVals(this, obj)
         override def hashCode = hashCodeAllVals(this)
       }
-      class Foo(val x: Int = 1, val y: String = "y", z: Boolean = false) extends Bar(z) {
-        override def equals(obj: Any) = equalsAllVals(this, obj) && super.equals(obj)
+      class Foo(val x: Int = 1, val y: String = "y", z: Boolean = false)
+          extends Bar(z) {
+        override def equals(obj: Any) =
+          equalsAllVals(this, obj) && super.equals(obj)
         override def hashCode = hashCodeAllVals(this) ^ super.hashCode()
       }
       new Foo() mustEqualWithHashCode new Foo()
@@ -73,7 +91,10 @@ class MacrosSpec extends WordSpec {
     }
     "work with simple inherited class" in {
       abstract class Bar(val z: Boolean)
-      class Foo(val x: Int = 1, val y: String = "y", override val z: Boolean = false) extends Bar(z) {
+      class Foo(val x: Int = 1,
+                val y: String = "y",
+                override val z: Boolean = false)
+          extends Bar(z) {
         override def equals(obj: Any) = equalsConstructorVals(this, obj)
         override def hashCode = hashCodeConstructorVals(this)
       }

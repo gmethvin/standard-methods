@@ -29,11 +29,13 @@ private[macros] class MacrosImpl(val c: blackbox.Context) {
     hashCodeImpl(self, nonInheritedConstructorVals)
   }
 
-  def equalsAllVals[T: WeakTypeTag](self: c.Expr[T], other: c.Expr[Any]): Tree = {
+  def equalsAllVals[T: WeakTypeTag](self: c.Expr[T],
+                                    other: c.Expr[Any]): Tree = {
     equalsImpl(self, other, nonInheritedVals)
   }
 
-  def equalsConstructorVals[T: WeakTypeTag](self: c.Expr[T], other: c.Expr[Any]): Tree = {
+  def equalsConstructorVals[T: WeakTypeTag](self: c.Expr[T],
+                                            other: c.Expr[Any]): Tree = {
     equalsImpl(self, other, nonInheritedConstructorVals)
   }
 
@@ -43,7 +45,8 @@ private[macros] class MacrosImpl(val c: blackbox.Context) {
 
   // Helpers
 
-  private def toStringImpl[T](self: c.Expr[T], symbols: Seq[Symbol])(implicit tag: WeakTypeTag[T]): Tree = {
+  private def toStringImpl[T](self: c.Expr[T], symbols: Seq[Symbol])(
+      implicit tag: WeakTypeTag[T]): Tree = {
     import tag.tpe
     assert(self != null) // we use this to infer the type without having to rely on context
     val params = symbols.map(_.name.toTermName)
@@ -56,20 +59,24 @@ private[macros] class MacrosImpl(val c: blackbox.Context) {
     q"scala.util.hashing.MurmurHash3.seqHash(scala.collection.immutable.Seq(..$params))"
   }
 
-  private def equalsImpl[T](self: c.Expr[T], other: c.Expr[Any], symbols: Seq[Symbol])
-    (implicit tag: WeakTypeTag[T]): Tree = {
+  private def equalsImpl[T](
+      self: c.Expr[T],
+      other: c.Expr[Any],
+      symbols: Seq[Symbol])(implicit tag: WeakTypeTag[T]): Tree = {
     import tag.tpe
 
     val otherCast = TermName(c.freshName("other"))
 
-    val equalAllVals = symbols.map { sym =>
-      val termName = sym.asTerm.name.toTermName
-      q"$self.$termName == $otherCast.$termName"
-    }.reduce((a, b) => q"$a && $b")
+    val equalAllVals = symbols
+      .map { sym =>
+        val termName = sym.asTerm.name.toTermName
+        q"$self.$termName == $otherCast.$termName"
+      }
+      .reduce((a, b) => q"$a && $b")
 
     val canEqual = canEqualOpt match {
       case Some(ce) => q"$otherCast.$ce($self)"
-      case None => q"$other.getClass == $self.getClass"
+      case None     => q"$other.getClass == $self.getClass"
     }
 
     q"""
@@ -84,24 +91,31 @@ private[macros] class MacrosImpl(val c: blackbox.Context) {
     val name = TermName("canEqual")
     val canEqual = typeOf[scala.Equals].member(name)
     tag.tpe.member(name) match {
-      case member if member.name == name && canEqual.typeSignature =:= member.typeSignature => Some(member)
+      case member
+          if member.name == name && canEqual.typeSignature =:= member.typeSignature =>
+        Some(member)
       case _ => None
     }
   }
 
-  private def nonInheritedConstructorVals[T](implicit tag: WeakTypeTag[T]): Seq[Symbol] = {
+  private def nonInheritedConstructorVals[T](
+      implicit tag: WeakTypeTag[T]): Seq[Symbol] = {
     val argNames = constructorParams.map(_.name).toSet
     nonInheritedVals.filter(v => argNames.contains(v.name))
   }
 
-  private def constructorParams[T](implicit tag: WeakTypeTag[T]): Seq[Symbol] = {
+  private def constructorParams[T](
+      implicit tag: WeakTypeTag[T]): Seq[Symbol] = {
     tag.tpe.member(termNames.CONSTRUCTOR).asMethod.paramLists.flatten
   }
 
   private def nonInheritedVals[T](implicit tag: WeakTypeTag[T]): Seq[Symbol] = {
     import tag.tpe
-    tpe.members.sorted.filter { t => t.isTerm && isVal(t) && t.owner == tpe.typeSymbol }
+    tpe.members.sorted.filter { t =>
+      t.isTerm && isVal(t) && t.owner == tpe.typeSymbol
+    }
   }
 
-  private def isVal(term: Symbol): Boolean = term.isMethod && term.asTerm.isStable
+  private def isVal(term: Symbol): Boolean =
+    term.isMethod && term.asTerm.isStable
 }
