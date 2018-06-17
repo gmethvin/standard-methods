@@ -35,8 +35,7 @@ class MacrosSpec extends WordSpec {
         override def equals(obj: Any) = equalsAllVals(this, obj)
         override def hashCode = hashCodeAllVals(this)
       }
-      class Foo(val x: Int = 1, val y: String = "y", z: Boolean = false)
-          extends Bar(z) {
+      class Foo(val x: Int = 1, val y: String = "y", z: Boolean = false) extends Bar(z) {
         override def equals(obj: Any) =
           equalsAllVals(this, obj) && super.equals(obj)
         override def hashCode = hashCodeAllVals(this) ^ super.hashCode()
@@ -91,10 +90,7 @@ class MacrosSpec extends WordSpec {
     }
     "work with simple inherited class" in {
       abstract class Bar(val z: Boolean)
-      class Foo(val x: Int = 1,
-                val y: String = "y",
-                override val z: Boolean = false)
-          extends Bar(z) {
+      class Foo(val x: Int = 1, val y: String = "y", override val z: Boolean = false) extends Bar(z) {
         override def equals(obj: Any) = equalsConstructorVals(this, obj)
         override def hashCode = hashCodeConstructorVals(this)
       }
