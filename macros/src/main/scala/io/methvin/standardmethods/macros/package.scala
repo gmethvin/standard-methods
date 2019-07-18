@@ -18,8 +18,6 @@ package io.methvin.standardmethods
 
 package object macros {
 
-  import scala.language.experimental.macros
-
   def equalsAllVals[T](self: T, other: Any): Boolean =
     macro MacrosImpl.equalsAllVals[T]
   def hashCodeAllVals[T](self: T): Int = macro MacrosImpl.hashCodeAllVals[T]

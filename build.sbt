@@ -10,22 +10,15 @@ developers in ThisBuild := List(
   Developer("gmethvin", "Greg Methvin", "greg@methvin.net", new URL("https://github.com/gmethvin"))
 )
 
-scalaVersion in ThisBuild := "2.12.6"
-crossScalaVersions in ThisBuild := Seq("2.11.12", scalaVersion.value, "2.13.0-M4")
+scalaVersion in ThisBuild := "2.13.0"
+crossScalaVersions in ThisBuild := Seq("2.11.12", "2.12.8", scalaVersion.value)
 
 lazy val macros = (project in file("macros"))
   .enablePlugins(AutomateHeaderPlugin)
   .settings(
-    scalacOptions in Compile := {
-      val invalidOptions = CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, 13)) => Set("-Yno-adapted-args", "-Ypartial-unification")
-        case _ => Set.empty[String]
-      }
-      scalacOptions.value.filterNot(invalidOptions)
-    },
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value,
-      "org.scalatest" %% "scalatest" % "3.0.6-SNAP1" % Test
+      "org.scalatest" %% "scalatest" % "3.0.8" % Test
     )
   )
 
